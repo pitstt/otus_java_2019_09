@@ -23,7 +23,7 @@ public class DIYarrayList<T> implements List<T> {
     }
 
     public DIYarrayList() {
-        this.elementData = new Object[10];
+        this.elementData = new Object[0];
     }
 
     @Override
