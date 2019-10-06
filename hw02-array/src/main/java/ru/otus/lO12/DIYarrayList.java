@@ -106,6 +106,7 @@ public class DIYarrayList<T> implements List<T> {
     @Override
     public void clear() {
         elementData = new Object[]{};
+        this.size=0;
     }
 
     @Override
