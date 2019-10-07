@@ -25,6 +25,7 @@
 
     <modules>
         <module>hw01-maven</module>
+        <module>hw02-array</module>
     </modules>
 
     <properties>
