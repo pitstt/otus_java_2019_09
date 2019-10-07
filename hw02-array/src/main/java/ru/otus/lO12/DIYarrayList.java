@@ -68,7 +68,8 @@ public class DIYarrayList<T> implements List<T> {
         if (size == elementData.length) {
             ensureCapacity();
         }
-        elementData[size++] = t;
+        elementData[size] = t;
+        size++;
         return true;
     }
 
