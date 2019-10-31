@@ -8,6 +8,7 @@ import javax.management.openmbean.CompositeData;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,8 +19,8 @@ public class CrunchifyGenerateOOM {
 
     private static List<Long> allDuration = new ArrayList<>();
     private static List<Integer> count = new ArrayList<>();
-    private static List<String> arrays = new ArrayList<>();
-    private static int countElement =0;
+    private static List<Long> arrays = new ArrayList<>();
+    private static int countElement = 0;
 
     public static void main(String[] args) throws Exception {
         System.out.println("Starting pid: " + ManagementFactory.getRuntimeMXBean().getName());
@@ -34,26 +35,27 @@ public class CrunchifyGenerateOOM {
                         e.printStackTrace();
                     }
                 } finally {
-                    countElement=arrays.size();
+                    countElement = arrays.size();
                     arrays.clear(); // Очищаем память
                 }
             }).get();
         } catch (Throwable e) {
+            long time = (System.currentTimeMillis() - beginTime) / 1000;
+            long countOperationInMin = countElement / (time / 60);
             System.out.println("-----------------------------------------------------------------------------------------------------------\n"
                     + "Общее время на сборку (" + getSum(allDuration) + " ms) " + " Количество сборок= " + count.size() + "\n" +
-                    "time (" + (System.currentTimeMillis() - beginTime) / 1000 + " s) " + "\n" +
+                    "time (" + time + " s) " + "\n" +
                     "Количество добавленных элементов: " + countElement + "\n" +
+                    "Количество операций в минуту: " + countOperationInMin + "\n" +
                     "-----------------------------------------------------------------------------------------------------------");
         }
         executor.shutdownNow();
     }
 
     public static void generateOOM() throws OutOfMemoryError, InterruptedException {
-        String a = "a";
         while (true) {
-            arrays.add(a);
-            a = a + "a";
-            Thread.sleep(10);
+            arrays.add(Long.MAX_VALUE);
+            Thread.sleep(1);
         }
     }
 
