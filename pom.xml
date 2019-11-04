@@ -26,6 +26,7 @@
     <modules>
         <module>hw01-maven</module>
         <module>hw02-array</module>
+        <module>hw03-outofmemory</module>
         <module>hw04-logger</module>
     </modules>
 
