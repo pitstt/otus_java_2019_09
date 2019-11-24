@@ -40,7 +40,7 @@ public class RunnerTest {
                         before.invoke(testsClass);
                     } catch (Exception e) {
                         error++;
-                        System.err.println(e.toString());
+                        e.printStackTrace();
                     }
                 });
                 test.invoke(testsClass);
@@ -49,13 +49,13 @@ public class RunnerTest {
                         method.invoke(testsClass);
                     } catch (Exception e) {
                         error++;
-                        System.err.println(e.toString());
+                        e.printStackTrace();
                     }
                 });
                 success++;
             } catch (Exception e) {
                 error++;
-                System.err.println(e.toString());
+                e.printStackTrace();
             }
         });
         int count = error + success;
