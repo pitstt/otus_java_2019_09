@@ -6,18 +6,68 @@ import ru.otus.lO15.annotation.Test;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RunnerTest {
 
-    private static int success = 0;
-    private static int error = 0;
-
     public static void run(Class<?> c) {
+        Methods methods = getMethods(Arrays.asList(c.getMethods()));
+        final int[] success = {0};
+        final int[] error = {0};
+        methods.testMethods.forEach(test -> {
+            System.out.println("--------------------------");
+            System.out.println(test.getName());
+            System.out.println("--------------------------");
+            try {
+                Object testsClass = c.newInstance();
+                methods.beforeTestMethods.forEach(before -> {
+                    try {
+                        before.invoke(testsClass);
+                    } catch (Exception e) {
+                        error[0] = error[0] + (methods.testMethods.size() - error[0] - success[0]);
+                        e.printStackTrace();
+                        printStatistic(success[0], error[0]);
+                        startAfterMethods(methods.afterTestMethods, testsClass);
+                        System.exit(1);
+                    }
+                });
+
+                test.invoke(testsClass);
+
+                startAfterMethods(methods.afterTestMethods, testsClass);
+
+                success[0]++;
+            } catch (Exception e) {
+                error[0]++;
+                e.printStackTrace();
+            }
+        });
+        printStatistic(success[0], error[0]);
+    }
+
+    private static void startAfterMethods(List<Method> afterMethods, Object testsClass) {
+        afterMethods.forEach(method -> {
+            try {
+                method.invoke(testsClass);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private static void printStatistic(int success, int error) {
+        int count = error + success;
+        System.out.println("--------------------------");
+        System.out.println("CountTest= " + count + " ;Success= " + success + " ;Error= " + error);
+        System.out.println("--------------------------");
+    }
+
+    private static Methods getMethods(List<Method> methodList) {
         List<Method> afterTestMethods = new ArrayList<>();
         List<Method> beforeTestMethods = new ArrayList<>();
         List<Method> testMethods = new ArrayList<>();
-        for (Method method : c.getMethods()) {
+        for (Method method : methodList) {
             if (method.isAnnotationPresent(After.class)) {
                 afterTestMethods.add(method);
             }
@@ -28,44 +78,19 @@ public class RunnerTest {
                 testMethods.add(method);
             }
         }
-
-        testMethods.forEach(test -> {
-            System.out.println("--------------------------");
-            System.out.println(test.getName());
-            System.out.println("--------------------------");
-            try {
-                Object testsClass = c.newInstance();
-                beforeTestMethods.forEach(before -> {
-                    try {
-                        before.invoke(testsClass);
-                    } catch (Exception e) {
-                        error++;
-                        e.printStackTrace();
-                    }
-                });
-                test.invoke(testsClass);
-                afterTestMethods.forEach(method -> {
-                    try {
-                        method.invoke(testsClass);
-                    } catch (Exception e) {
-                        error++;
-                        e.printStackTrace();
-                    }
-                });
-                success++;
-            } catch (Exception e) {
-                error++;
-                e.printStackTrace();
-            }
-        });
-        int count = error + success;
-        System.out.println("--------------------------");
-        System.out.println("CountTest= " + count + " ;Success= " + success + " ;Error= " + error);
-        System.out.println("--------------------------");
+        return new Methods(beforeTestMethods, afterTestMethods, testMethods);
     }
 
-    private void runTests(List<Method> before, List<Method> after, List<Method> test) {
+    private static class Methods {
+        List<Method> beforeTestMethods;
+        List<Method> afterTestMethods;
+        List<Method> testMethods;
 
+        Methods(List<Method> beforeTestMethods, List<Method> afterTestMethods, List<Method> testMethods) {
+            this.beforeTestMethods = beforeTestMethods;
+            this.afterTestMethods = afterTestMethods;
+            this.testMethods = testMethods;
+        }
 
     }
 
