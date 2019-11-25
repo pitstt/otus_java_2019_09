@@ -32,11 +32,8 @@ public class RunnerTest {
                         System.exit(1);
                     }
                 });
-
                 test.invoke(testsClass);
-
                 startAfterMethods(methods.afterTestMethods, testsClass);
-
                 success[0]++;
             } catch (Exception e) {
                 error[0]++;
