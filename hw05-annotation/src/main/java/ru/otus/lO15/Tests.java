@@ -7,7 +7,7 @@ import ru.otus.lO15.annotation.Test;
 public class Tests {
 
     @Before
-    public void before() {
+    public void before(){
         System.out.println("before");
     }
 

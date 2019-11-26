@@ -1,56 +1,46 @@
 package ru.otus.lO15;
 
-import ru.otus.lO15.annotation.After;
-import ru.otus.lO15.annotation.Before;
-import ru.otus.lO15.annotation.Test;
-
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+
 
 public class RunnerTest {
 
     public static void run(Class<?> c) {
-        Methods methods = getMethods(Arrays.asList(c.getMethods()));
-        final int[] success = {0};
-        final int[] error = {0};
-        methods.testMethods.forEach(test -> {
+        Methods methods = new Methods(Arrays.asList(c.getMethods()));
+        int success = 0;
+        int error = 0;
+        for (Method test : methods.testMethods) {
             System.out.println("--------------------------");
             System.out.println(test.getName());
             System.out.println("--------------------------");
+            Object testsClass = null;
             try {
-                Object testsClass = c.newInstance();
-                methods.beforeTestMethods.forEach(before -> {
+                testsClass = c.newInstance();
+                for (Method before : methods.beforeTestMethods) {
                     try {
                         before.invoke(testsClass);
                     } catch (Exception e) {
-                        error[0] = error[0] + (methods.testMethods.size() - error[0] - success[0]);
                         e.printStackTrace();
-                        printStatistic(success[0], error[0]);
-                        startAfterMethods(methods.afterTestMethods, testsClass);
-                        System.exit(1);
+                        return;
                     }
-                });
+                }
                 test.invoke(testsClass);
-                startAfterMethods(methods.afterTestMethods, testsClass);
-                success[0]++;
+                success++;
             } catch (Exception e) {
-                error[0]++;
+                error++;
                 e.printStackTrace();
+            } finally {
+                for (Method method : methods.afterTestMethods) {
+                    try {
+                        method.invoke(testsClass);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        });
-        printStatistic(success[0], error[0]);
-    }
-
-    private static void startAfterMethods(List<Method> afterMethods, Object testsClass) {
-        afterMethods.forEach(method -> {
-            try {
-                method.invoke(testsClass);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        }
+        printStatistic(success, error);
     }
 
     private static void printStatistic(int success, int error) {
@@ -58,37 +48,6 @@ public class RunnerTest {
         System.out.println("--------------------------");
         System.out.println("CountTest= " + count + " ;Success= " + success + " ;Error= " + error);
         System.out.println("--------------------------");
-    }
-
-    private static Methods getMethods(List<Method> methodList) {
-        List<Method> afterTestMethods = new ArrayList<>();
-        List<Method> beforeTestMethods = new ArrayList<>();
-        List<Method> testMethods = new ArrayList<>();
-        for (Method method : methodList) {
-            if (method.isAnnotationPresent(After.class)) {
-                afterTestMethods.add(method);
-            }
-            if (method.isAnnotationPresent(Before.class)) {
-                beforeTestMethods.add(method);
-            }
-            if (method.isAnnotationPresent(Test.class)) {
-                testMethods.add(method);
-            }
-        }
-        return new Methods(beforeTestMethods, afterTestMethods, testMethods);
-    }
-
-    private static class Methods {
-        List<Method> beforeTestMethods;
-        List<Method> afterTestMethods;
-        List<Method> testMethods;
-
-        Methods(List<Method> beforeTestMethods, List<Method> afterTestMethods, List<Method> testMethods) {
-            this.beforeTestMethods = beforeTestMethods;
-            this.afterTestMethods = afterTestMethods;
-            this.testMethods = testMethods;
-        }
-
     }
 
 }
