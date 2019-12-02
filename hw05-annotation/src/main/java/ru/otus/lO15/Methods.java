@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 class Methods {
 
-    List<Method> beforeTestMethods;
-    List<Method> afterTestMethods;
-    List<Method> testMethods;
+    private final List<Method> beforeTestMethods;
+    private final List<Method> afterTestMethods;
+    private final List<Method> testMethods;
 
     Methods(List<Method> methodList) {
         this.beforeTestMethods = methodList.stream()
@@ -22,5 +22,17 @@ class Methods {
                 .filter(m-> m.isAnnotationPresent(After.class)).collect(Collectors.toList());
         this.testMethods = methodList.stream()
                 .filter(m-> m.isAnnotationPresent(Test.class)).collect(Collectors.toList());;
+    }
+
+    public List<Method> getBeforeTestMethods() {
+        return beforeTestMethods;
+    }
+
+    public List<Method> getAfterTestMethods() {
+        return afterTestMethods;
+    }
+
+    public List<Method> getTestMethods() {
+        return testMethods;
     }
 }

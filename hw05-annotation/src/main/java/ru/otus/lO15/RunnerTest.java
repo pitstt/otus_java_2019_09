@@ -1,6 +1,5 @@
 package ru.otus.lO15;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -12,15 +11,12 @@ public class RunnerTest {
         Methods methods = new Methods(Arrays.asList(c.getMethods()));
         int success = 0;
         int error = 0;
-        for (Method test : methods.testMethods) {
+        for (Method test : methods.getTestMethods()) {
             printTestName(test.getName());
             Object testsClassInstance = null;
             try {
                 testsClassInstance = c.getDeclaredConstructor().newInstance();
-                try {
-                    invokeMethodsWithExceptionHandling(methods.beforeTestMethods, testsClassInstance);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (!invokeMethodsWithExceptionHandling(methods.getBeforeTestMethods(), testsClassInstance)) {
                     break;
                 }
                 test.invoke(testsClassInstance);
@@ -29,11 +25,7 @@ public class RunnerTest {
                 error++;
                 e.printStackTrace();
             } finally {
-                try {
-                    invokeMethodsWithExceptionHandling(methods.afterTestMethods, testsClassInstance);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                invokeMethodsWithExceptionHandling(methods.getAfterTestMethods(), testsClassInstance);
             }
         }
         printStatistic(success, error);
@@ -52,10 +44,16 @@ public class RunnerTest {
         System.out.println("--------------------------");
     }
 
-    private static void invokeMethodsWithExceptionHandling(List<Method> methodList, Object testsClassInstance) throws InvocationTargetException, IllegalAccessException {
+    private static boolean invokeMethodsWithExceptionHandling(List<Method> methodList, Object testsClassInstance) {
         for (Method method : methodList) {
-            method.invoke(testsClassInstance);
+            try {
+                method.invoke(testsClassInstance);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
         }
+        return true;
     }
 
 }
