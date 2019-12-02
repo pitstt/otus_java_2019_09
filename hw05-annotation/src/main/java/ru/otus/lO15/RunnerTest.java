@@ -10,7 +10,6 @@ public class RunnerTest {
     public static void run(Class<?> c) {
         Methods methods = new Methods(Arrays.asList(c.getMethods()));
         int success = 0;
-        int error = 0;
         for (Method test : methods.getTestMethods()) {
             printTestName(test.getName());
             Object testsClassInstance = null;
@@ -22,13 +21,12 @@ public class RunnerTest {
                 test.invoke(testsClassInstance);
                 success++;
             } catch (Exception e) {
-                error++;
                 e.printStackTrace();
             } finally {
                 invokeMethodsWithExceptionHandling(methods.getAfterTestMethods(), testsClassInstance);
             }
         }
-        printStatistic(success, error);
+        printStatistic(success, methods.getTestMethods().size() - success);
     }
 
     private static void printStatistic(int success, int error) {
