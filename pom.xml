@@ -28,6 +28,7 @@
         <module>hw02-array</module>
         <module>hw03-outofmemory</module>
         <module>hw04-logger</module>
+        <module>hw05-annotation</module>
     </modules>
 
     <properties>
