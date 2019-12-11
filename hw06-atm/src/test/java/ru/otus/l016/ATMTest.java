@@ -7,9 +7,10 @@ public class ATMTest {
     @Test
     public void test() throws Exception {
         ATM atm = new ATM();
-        atm.addMoney(100,1000,100, 50, 100);
-        atm.getMoney(1150);
-        atm.printBalance();
+        Cell cell = atm.getCell();
+        cell.addMoney(Bills.HUNDRED, Bills.THOUSAND, Bills.HUNDRED, Bills.FIFTY, Bills.HUNDRED);
+        cell.getMoney(1150);
+        cell.printBalance();
     }
 
 }
