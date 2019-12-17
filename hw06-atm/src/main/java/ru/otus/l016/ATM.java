@@ -3,12 +3,13 @@ package ru.otus.l016;
 
 public class ATM {
 
-    private Cell cell = new Cell();
+    private CellController cellController;
 
-    public ATM() {
+    public ATM(CellController cellController) {
+        this.cellController = cellController;
     }
 
-    public Cell getCell() {
-        return cell;
+    public CellController getCellController() {
+        return cellController;
     }
 }
