@@ -27,4 +27,9 @@ public class CellImpl implements Cell {
     public List<Bills> getBills() {
         return money;
     }
+
+    @Override
+    public void removeBill(Bills bill) {
+        money.remove(bill);
+    }
 }

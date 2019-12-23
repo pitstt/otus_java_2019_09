@@ -43,7 +43,7 @@ public class CellControllerImpl implements CellController {
             if (nominal != null) {
                 sum = sum - nominal.getValue();
                 moneyList.add(nominal.getValue());
-                cells.stream().filter(e -> e.getBillsType().equals(nominal)).forEach(e -> e.getBills().remove(nominal));
+                cells.stream().filter(e -> e.getBillsType().equals(nominal)).forEach(e -> e.removeBill(nominal));
                 result.add(nominal);
             } else {
                 throw new Exception("В банкомате нет подходящих банкнот!");

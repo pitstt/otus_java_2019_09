@@ -9,4 +9,7 @@ public interface Cell {
     void addBill(Bills bill);
 
     List<Bills> getBills();
+
+    void removeBill(Bills bill);
+
 }
