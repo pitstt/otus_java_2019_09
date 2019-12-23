@@ -29,6 +29,7 @@
         <module>hw03-outofmemory</module>
         <module>hw04-logger</module>
         <module>hw05-annotation</module>
+        <module>hw06-atm</module>
     </modules>
 
     <properties>
