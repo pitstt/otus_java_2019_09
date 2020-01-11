@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class JsonWrapperTypes {
+public class MyJsonWrapperTypes {
 
     private static final Set<Class> WRAPPER_TYPES = new HashSet(Arrays.asList(String.class,
             Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Void.class));

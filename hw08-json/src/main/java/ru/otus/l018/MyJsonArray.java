@@ -4,8 +4,8 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import java.lang.reflect.Array;
 
-import static ru.otus.l018.JsonWrapperTypes.isWrapperType;
-import static ru.otus.l018.JsonWrapperTypes.objectToJsonValue;
+import static ru.otus.l018.MyJsonWrapperTypes.isWrapperType;
+import static ru.otus.l018.MyJsonWrapperTypes.objectToJsonValue;
 
 public class MyJsonArray {
 

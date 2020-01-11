@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.otus.l018.JsonWrapperTypes.isWrapperType;
-import static ru.otus.l018.JsonWrapperTypes.objectToJsonValue;
+import static ru.otus.l018.MyJsonWrapperTypes.isWrapperType;
+import static ru.otus.l018.MyJsonWrapperTypes.objectToJsonValue;
 import static ru.otus.l018.MyJsonArray.arrayWriter;
 
 public class MyJsonObject {
