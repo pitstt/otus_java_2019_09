@@ -3,20 +3,15 @@ package ru.otus.l018;
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
+import static ru.otus.l018.JsonWrapperTypes.isWrapperType;
+import static ru.otus.l018.JsonWrapperTypes.objectToJsonValue;
 import static ru.otus.l018.MyJsonArray.arrayWriter;
 
 public class MyJsonObject {
-
-    private static final Set<Class> WRAPPER_TYPES = new HashSet(Arrays.asList(
-            Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Void.class));
 
     public static String create(Object o) {
         var jsonObjectBuilder = Json.createObjectBuilder();
@@ -43,20 +38,10 @@ public class MyJsonObject {
                     jsonObjectBuilder.add(field.getName(), arrayWriter(field.get(o)));
                 } else if (field.get(o) instanceof Iterable) {
                     jsonObjectBuilder.add(field.getName(), MyJsonIterable.iterableWriter(field.get(o)));
-                } else if (field.get(o) instanceof Integer) {
-                    jsonObjectBuilder.add(field.getName(), (Integer) field.get(o));
-                } else if (field.get(o) instanceof String) {
-                    jsonObjectBuilder.add(field.getName(), (String) field.get(o));
-                } else if (field.get(o) instanceof Double) {
-                    jsonObjectBuilder.add(field.getName(), (Double) field.get(o));
                 } else if (field.get(o) instanceof Boolean) {
-                    jsonObjectBuilder.add(field.getName(), (Boolean) field.get(o));
-                } else if (field.get(o) instanceof BigInteger) {
-                    jsonObjectBuilder.add(field.getName(), (BigInteger) field.get(o));
-                } else if (field.get(o) instanceof BigDecimal) {
-                    jsonObjectBuilder.add(field.getName(), (BigDecimal) field.get(o));
-                } else if (c.isPrimitive()) {
-                    primitiveWriter(jsonObjectBuilder, field, o);
+                    jsonObjectBuilder.add(field.getName(), (boolean) field.get(o));
+                } else if (isWrapperType(field.get(o).getClass())) {
+                    jsonObjectBuilder.add(field.getName(), objectToJsonValue(field.get(o)));
                 } else {
                     var newJsonObjectBuilder = Json.createObjectBuilder();
                     writerObject(newJsonObjectBuilder, field.get(o));
@@ -68,20 +53,5 @@ public class MyJsonObject {
         }
     }
 
-    private static void primitiveWriter(JsonObjectBuilder jsonObjectBuilder, Field field, Object o) throws IllegalAccessException {
-        if (field.getType().equals(int.class)) {
-            jsonObjectBuilder.add(field.getName(), (int) field.get(o));
-        } else if (field.getType().equals(long.class)) {
-            jsonObjectBuilder.add(field.getName(), (long) field.get(o));
-        } else if (field.getType().equals(double.class)) {
-            jsonObjectBuilder.add(field.getName(), (double) field.get(o));
-        } else if (field.getType().equals(boolean.class)) {
-            jsonObjectBuilder.add(field.getName(), (boolean) field.get(o));
-        }
-    }
-
-    private static boolean isWrapperType(Class clazz) {
-        return WRAPPER_TYPES.contains(clazz);
-    }
 
 }
