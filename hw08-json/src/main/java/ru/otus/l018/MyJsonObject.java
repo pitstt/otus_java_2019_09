@@ -13,23 +13,9 @@ import static ru.otus.l018.MyJsonArray.arrayWriter;
 
 public class MyJsonObject {
 
-    public static String create(Object o) {
-        var jsonObjectBuilder = Json.createObjectBuilder();
-        if (o.getClass().isArray()) {
-            return arrayWriter(o).build().toString();
-        } else if (o instanceof Iterable) {
-            return MyJsonIterable.iterableWriter(o).build().toString();
-        } else if (o.getClass().isPrimitive()) {
-            return (String) o;
-        } else if (isWrapperType(o.getClass())) {
-            return o.toString();
-        } else {
-            writerObject(jsonObjectBuilder, o);
-            return jsonObjectBuilder.build().toString();
-        }
-    }
 
-    private static void writerObject(JsonObjectBuilder jsonObjectBuilder, Object o) {
+
+    protected static void writerObject(JsonObjectBuilder jsonObjectBuilder, Object o) {
         List<Field> fields = Arrays.stream(o.getClass().getDeclaredFields()).collect(Collectors.toList());
         for (Field field : fields) {
             try {
