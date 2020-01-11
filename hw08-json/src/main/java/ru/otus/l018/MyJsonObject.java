@@ -1,23 +1,37 @@
 package ru.otus.l018;
 
 import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import static ru.otus.l018.MyJsonArray.arrayWriter;
 
 public class MyJsonObject {
 
-    public static JsonObject create(Object o) {
+    private static final Set<Class> WRAPPER_TYPES = new HashSet(Arrays.asList(
+            Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Void.class));
+
+    public static String create(Object o) {
         var jsonObjectBuilder = Json.createObjectBuilder();
-        writerObject(jsonObjectBuilder, o);
-        return jsonObjectBuilder.build();
+        if (o.getClass().isArray()) {
+            return arrayWriter(o).build().toString();
+        } else if (o instanceof Iterable) {
+            return MyJsonIterable.iterableWriter(o).build().toString();
+        } else if (o.getClass().isPrimitive()) {
+            return (String) o;
+        } else if (isWrapperType(o.getClass())) {
+            return o.toString();
+        } else {
+            writerObject(jsonObjectBuilder, o);
+            return jsonObjectBuilder.build().toString();
+        }
     }
 
     private static void writerObject(JsonObjectBuilder jsonObjectBuilder, Object o) {
@@ -26,28 +40,20 @@ public class MyJsonObject {
             try {
                 Class<?> c = field.getType();
                 if (c.isArray()) {
-                    JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-                    for (int i = 0; i < Array.getLength(field.get(o)); i++) {
-                        MyJsonArray.arrayWriter(arrayBuilder, Array.get(field.get(o), i));
-                    }
-                    jsonObjectBuilder.add(field.getName(), arrayBuilder);
+                    jsonObjectBuilder.add(field.getName(), arrayWriter(field.get(o)));
                 } else if (field.get(o) instanceof Iterable) {
-                    JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-                    ((Iterable<?>) field.get(o)).forEach(e -> {
-                        MyJsonArray.arrayWriter(arrayBuilder, e);
-                    });
-                    jsonObjectBuilder.add(field.getName(), arrayBuilder);
-                } else if (c.equals(Integer.class)) {
+                    jsonObjectBuilder.add(field.getName(), MyJsonIterable.iterableWriter(field.get(o)));
+                } else if (field.get(o) instanceof Integer) {
                     jsonObjectBuilder.add(field.getName(), (Integer) field.get(o));
-                } else if (c.equals(String.class)) {
+                } else if (field.get(o) instanceof String) {
                     jsonObjectBuilder.add(field.getName(), (String) field.get(o));
-                } else if (c.equals(Double.class)) {
+                } else if (field.get(o) instanceof Double) {
                     jsonObjectBuilder.add(field.getName(), (Double) field.get(o));
-                } else if (c.equals(Boolean.class)) {
+                } else if (field.get(o) instanceof Boolean) {
                     jsonObjectBuilder.add(field.getName(), (Boolean) field.get(o));
-                } else if (c.equals(BigInteger.class)) {
+                } else if (field.get(o) instanceof BigInteger) {
                     jsonObjectBuilder.add(field.getName(), (BigInteger) field.get(o));
-                } else if (c.equals(BigDecimal.class)) {
+                } else if (field.get(o) instanceof BigDecimal) {
                     jsonObjectBuilder.add(field.getName(), (BigDecimal) field.get(o));
                 } else if (c.isPrimitive()) {
                     primitiveWriter(jsonObjectBuilder, field, o);
@@ -72,6 +78,10 @@ public class MyJsonObject {
         } else if (field.getType().equals(boolean.class)) {
             jsonObjectBuilder.add(field.getName(), (boolean) field.get(o));
         }
+    }
+
+    private static boolean isWrapperType(Class clazz) {
+        return WRAPPER_TYPES.contains(clazz);
     }
 
 }
