@@ -41,6 +41,24 @@ public class MySonDemo {
         System.out.println(json5);
         System.out.println(mySon5);
 
+        String json6 = gson.toJson(null);
+        String mySon6 = MySon.toJson(null);
+
+        System.out.println(json6);
+        System.out.println(mySon6);
+
+        String json7 = gson.toJson("aaa");
+        String mySon7 = MySon.toJson("aaa");
+
+        System.out.println(json7);
+        System.out.println(mySon7);
+
+        String json8 = gson.toJson('a');
+        String mySon8 = MySon.toJson('a');
+
+        System.out.println(json8);
+        System.out.println(mySon8);
+
         if (!mySon.equals(json)) {
             throw new Exception("Файлы отличаются!");
         }
@@ -54,6 +72,15 @@ public class MySonDemo {
             throw new Exception("Файлы отличаются!");
         }
         if (!mySon5.equals(json5)) {
+            throw new Exception("Файлы отличаются!");
+        }
+        if (!mySon6.equals(json6)) {
+            throw new Exception("Файлы отличаются!");
+        }
+        if (!mySon7.equals(json7)) {
+            throw new Exception("Файлы отличаются!");
+        }
+        if (!mySon8.equals(json8)) {
             throw new Exception("Файлы отличаются!");
         }
     }

@@ -4,6 +4,8 @@ import java.util.List;
 
 public class TestClass {
 
+    public static final int INT = 115;
+
     public int integer;
 
     public String string;

@@ -4,17 +4,16 @@ import javax.json.Json;
 import javax.json.JsonValue;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
-public class MyJsonWrapperTypes {
+import static ru.otus.l018.MyJsonArray.arrayWriter;
+import static ru.otus.l018.MyJsonObject.writerObject;
 
-    private static final Set<Class> WRAPPER_TYPES = new HashSet(Arrays.asList(String.class,
-            Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Void.class));
+public class MyJsonSerializer {
 
     public static JsonValue objectToJsonValue(Object o) {
-        if (o instanceof Integer) {
+        if (o == null) {
+            return JsonValue.NULL;
+        } else if (o instanceof Integer) {
             return Json.createValue((Integer) o);
         } else if (o instanceof String) {
             return Json.createValue((String) o);
@@ -25,18 +24,22 @@ public class MyJsonWrapperTypes {
         } else if (o instanceof Double) {
             return Json.createValue((Double) o);
         } else if (o instanceof Character) {
-            return Json.createValue((Character) o);
+            return Json.createValue(o.toString());
         } else if (o instanceof Byte) {
             return Json.createValue((Byte) o);
         } else if (o instanceof Long) {
             return Json.createValue((Long) o);
         } else if (o instanceof Float) {
             return Json.createValue((Float) o);
+        } else if (o.getClass().isArray()) {
+            return arrayWriter(o).build();
+        } else if (o instanceof Iterable) {
+            return MyJsonIterable.iterableWriter(o).build();
+        } else if (o instanceof Boolean) {
+            return ((Boolean) o) ? JsonValue.TRUE : JsonValue.FALSE;
+        } else {
+            return writerObject(o).build();
         }
-        return null;
     }
 
-    public static boolean isWrapperType(Class clazz) {
-        return WRAPPER_TYPES.contains(clazz);
-    }
 }
