@@ -31,6 +31,7 @@
         <module>hw05-annotation</module>
         <module>hw06-atm</module>
         <module>hw08-json</module>
+        <module>hw09-jdbc</module>
     </modules>
 
     <properties>
