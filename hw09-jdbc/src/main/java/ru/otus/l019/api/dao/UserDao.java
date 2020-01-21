@@ -5,13 +5,13 @@ import ru.otus.l019.api.sessionmanager.SessionManager;
 
 import java.util.Optional;
 
-public interface UserDao {
+public interface UserDao<T> {
 
-    Optional<Object> load(long id, Class clazz);
+    Optional<Object> load(long id, Class<T> clazz);
 
-    long create(Object o);
+    long create(T o);
 
-    void update(Object o);
+    void update(T o);
 
     SessionManager getSessionManager();
 }

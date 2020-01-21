@@ -5,9 +5,9 @@ public class User {
     @Id
     private long id;
 
-    private final String name;
+    private String name;
 
-    private final long age;
+    private long age;
 
     public User(long id, String name, long age) {
         this.id = id;
@@ -18,6 +18,9 @@ public class User {
     public User(String name, long age) {
         this.name = name;
         this.age = age;
+    }
+
+    public User() {
     }
 
     public long getId() {

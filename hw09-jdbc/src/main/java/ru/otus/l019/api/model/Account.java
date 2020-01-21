@@ -5,9 +5,9 @@ public class Account {
     @Id
     private long no;
 
-    private final String type;
+    private String type;
 
-    private final long rest;
+    private long rest;
 
     public Account(long no, String type, long rest) {
         this.no = no;
@@ -18,6 +18,9 @@ public class Account {
     public Account(String type, long rest) {
         this.type = type;
         this.rest = rest;
+    }
+
+    public Account() {
     }
 
     public long getNo() {

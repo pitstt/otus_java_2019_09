@@ -4,8 +4,8 @@ import java.util.List;
 
 public class TableObject {
 
-    String tableName;
-    List<Column> columns;
+    private final String tableName;
+    private final List<Column> columns;
 
     public TableObject(String tableName, List<Column> columns) {
         this.tableName = tableName;
@@ -17,16 +17,24 @@ public class TableObject {
     }
 
     public String getInsert() {
-        TableObject.Column column1 = columns.get(1);
-        TableObject.Column column2 = columns.get(2);
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("insert into ");
         stringBuilder.append(tableName);
         stringBuilder.append("(");
-        stringBuilder.append(column1.getName());
-        stringBuilder.append(",");
-        stringBuilder.append(column2.getName());
-        stringBuilder.append(") values (?,?)");
+        for (int i = 1; i < columns.size(); i++) {
+            stringBuilder.append(columns.get(i).getName());
+            if(i<columns.size()-1);{
+                stringBuilder.append(",");
+            }
+        }
+        stringBuilder.append(") values (");
+        for (int i = 1; i < columns.size(); i++) {
+            stringBuilder.append("?");
+            if(i<columns.size()-1);{
+                stringBuilder.append(",");
+            }
+        }
+        stringBuilder.append(")");
         return stringBuilder.toString();
     }
 
@@ -69,9 +77,9 @@ public class TableObject {
     }
 
     public static class Column {
-        boolean id;
-        String name;
-        String value;
+        private final boolean id;
+        private final String name;
+        private final String value;
 
         public Column(boolean id, String name, String value) {
             this.id = id;

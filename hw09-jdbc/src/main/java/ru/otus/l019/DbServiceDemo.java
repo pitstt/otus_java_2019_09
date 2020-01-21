@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import ru.otus.l019.api.dao.UserDao;
 import ru.otus.l019.api.model.Account;
 import ru.otus.l019.api.model.User;
-import ru.otus.l019.api.service.DBServiceUser;
-import ru.otus.l019.api.service.DbServiceUserImpl;
+import ru.otus.l019.api.service.JdbcTemplate;
+import ru.otus.l019.api.service.JdbcTemplateImpl;
 import ru.otus.l019.h2.DataSourceH2;
 import ru.otus.l019.jdbc.DbExecutor;
 import ru.otus.l019.jdbc.dao.UserDaoJdbc;
@@ -31,11 +31,11 @@ public class DbServiceDemo {
         SessionManagerJdbc sessionManager = new SessionManagerJdbc(dataSource);
         DbExecutor<Object> dbExecutor = new DbExecutor<>();
         UserDao userDao = new UserDaoJdbc(sessionManager, dbExecutor);
-        DBServiceUser dbServiceUser = new DbServiceUserImpl(userDao);
+        JdbcTemplate jdbcTemplate = new JdbcTemplateImpl(userDao);
 
 
-        long id = dbServiceUser.crate(new User("dbServiceUser", 11));
-        Optional<Object> user = dbServiceUser.load(id, User.class);
+        long id = jdbcTemplate.create(new User("dbServiceUser", 11));
+        Optional<User> user = jdbcTemplate.load(id, User.class);
 
         System.out.println(user);
         user.ifPresentOrElse(
@@ -43,8 +43,8 @@ public class DbServiceDemo {
                 () -> logger.info("user was not created")
         );
 
-        dbServiceUser.update(new User(id, "updateUser", 12));
-        Optional<Object> updateUser = dbServiceUser.load(id, User.class);
+        jdbcTemplate.update(new User(id, "updateUser", 12));
+        Optional<User> updateUser = jdbcTemplate.load(id, User.class);
 
         System.out.println(updateUser);
         updateUser.ifPresentOrElse(
@@ -54,8 +54,8 @@ public class DbServiceDemo {
 
 
         //Account
-        long idAccount = dbServiceUser.crate(new Account("type", 11));
-        Optional<Object> account = dbServiceUser.load(idAccount, Account.class);
+        long idAccount = jdbcTemplate.create(new Account("type", 11));
+        Optional<Account> account = jdbcTemplate.load(idAccount, Account.class);
 
         System.out.println(account);
         account.ifPresentOrElse(
@@ -63,8 +63,8 @@ public class DbServiceDemo {
                 () -> logger.info("Account was not created")
         );
 
-        dbServiceUser.update(new Account(idAccount, "updateAccount", 12));
-        Optional<Object> updateAccount = dbServiceUser.load(idAccount, Account.class);
+        jdbcTemplate.update(new Account(idAccount, "updateAccount", 12));
+        Optional<Account> updateAccount = jdbcTemplate.load(idAccount, Account.class);
 
         System.out.println(updateAccount);
         updateAccount.ifPresentOrElse(
