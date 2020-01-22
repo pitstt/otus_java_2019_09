@@ -23,14 +23,14 @@ public class TableObject {
         stringBuilder.append("(");
         for (int i = 1; i < columns.size(); i++) {
             stringBuilder.append(columns.get(i).getName());
-            if(i<columns.size()-1);{
+            if(i<columns.size()-1){
                 stringBuilder.append(",");
             }
         }
         stringBuilder.append(") values (");
         for (int i = 1; i < columns.size(); i++) {
             stringBuilder.append("?");
-            if(i<columns.size()-1);{
+            if(i<columns.size()-1){
                 stringBuilder.append(",");
             }
         }
