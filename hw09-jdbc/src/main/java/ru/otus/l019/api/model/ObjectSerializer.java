@@ -10,10 +10,6 @@ public class ObjectSerializer {
     private static Map<Class, TableObject> hash = new HashMap<>();
 
     public static TableObject toTableObject(Object o) {
-        TableObject tableObject = hash.get(o.getClass());
-        if (tableObject != null) {
-            return tableObject;
-        }
         String tableName = o.getClass().getSimpleName();
         List<TableObject.Column> columns = new ArrayList<>();
         List<Field> fields = Arrays.stream(o.getClass().getDeclaredFields()).collect(Collectors.toList());
