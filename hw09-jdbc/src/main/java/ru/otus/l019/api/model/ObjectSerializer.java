@@ -1,17 +1,16 @@
 package ru.otus.l019.api.model;
 
 
-import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class ObjectSerializer {
 
-    private  static SoftReference<Map<Class, TableObject>> cache = new SoftReference(new HashMap<Class, TableObject>());
+    private static Map<Class, TableObject> cache = new HashMap<>();
 
     public static TableObject toTableObject(Object o) {
-        TableObject tableObject = cache.get().get(o);
+        TableObject tableObject = cache.get(o);
         if (tableObject != null) {
             return tableObject;
         }
@@ -27,7 +26,7 @@ public class ObjectSerializer {
             }
         }
         TableObject newTableObject = new TableObject(tableName, columns);
-        cache.get().put(o.getClass(), newTableObject);
+        cache.put(o.getClass(), newTableObject);
         return newTableObject;
     }
 }
