@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import ru.otus.hibernate.dao.UserDaoHibernate;
 import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
 import ru.otus.l019.api.dao.UserDao;
-import ru.otus.l019.api.service.JdbcTemplate;
-import ru.otus.l019.api.service.JdbcTemplateImpl;
+import service.HibernateTemplate;
+import service.HibernateTemplateImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class DbServiceDemo {
 
         SessionManagerHibernate sessionManager = new SessionManagerHibernate(sessionFactory);
         UserDao userDao = new UserDaoHibernate(sessionManager);
-        JdbcTemplate dbServiceUser = new JdbcTemplateImpl(userDao);
+        HibernateTemplate dbServiceUser = new HibernateTemplateImpl(userDao);
 
         User vasya = new User(0, "Вася", 11);
         vasya.setAddressDataSet(new AddressDataSet("1 street"));
