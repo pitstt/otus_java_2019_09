@@ -35,7 +35,6 @@ public class UserDaoJdbc<T> implements UserDao<T> {
     @Override
     public Optional<T> load(long id, Class clazz) {
         TableObject tableObject = ObjectSerializer.toTableObject(clazz);
-        List<TableObject.Column> columns = tableObject.getColumns();
         try {
             return (Optional<T>) dbExecutor.selectRecord(getConnection(), tableObject.getSelect(), id, resultSet -> {
                 try {

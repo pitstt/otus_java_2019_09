@@ -2,13 +2,18 @@ package ru.otus.l019.api.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.cachehw.MyCache;
 import ru.otus.l019.api.dao.UserDao;
 import ru.otus.l019.api.sessionmanager.SessionManager;
 
+import java.lang.ref.SoftReference;
 import java.util.Optional;
 
 public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
+
     private static Logger logger = LoggerFactory.getLogger(JdbcTemplateImpl.class);
+
+    private static MyCache<Long, SoftReference<Object>> cache = new MyCache<>();
 
     private final UserDao userDao;
 
@@ -23,7 +28,7 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
             try {
                 long userId = userDao.create(user);
                 sessionManager.commitSession();
-
+                cache.put(userId, new SoftReference<>(user));
                 logger.info("created object: {}", userId);
                 return userId;
             } catch (Exception e) {
@@ -39,6 +44,12 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
         try (SessionManager sessionManager = userDao.getSessionManager()) {
             sessionManager.beginSession();
             try {
+                if(cache.get(id)!=null) {
+                    Optional<Object> result = Optional.ofNullable(cache.get(id).get());
+                    logger.info("use Cache");
+                    return (Optional<T>) result;
+                }
+                logger.info("use DB");
                 Optional<Object> userOptional = userDao.load(id, clazz);
 
                 logger.info("object: {}", userOptional.orElse(null));
