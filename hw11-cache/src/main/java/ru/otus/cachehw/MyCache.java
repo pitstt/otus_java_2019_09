@@ -6,11 +6,12 @@ import java.util.*;
 
 public class MyCache<K, V> implements HwCache<K, V> {
 
-    private final Map<K, SoftReference<V>> elements = new HashMap<>();
+    private final WeakHashMap <K, SoftReference<V>> elements = new WeakHashMap <>();
     private List<HwListener> listeners = new ArrayList<>();
 
     @Override
     public void put(K key, V value) {
+        notifyListener(key, value, "put");
         elements.put(key, new SoftReference<>(value));
     }
 
@@ -24,8 +25,12 @@ public class MyCache<K, V> implements HwCache<K, V> {
 
     @Override
     public V get(K key) {
-        Optional<SoftReference<V>> optional = Optional.ofNullable(elements.get(key));
-        return optional.map(SoftReference::get).orElse(null);
+        if(elements.get(key)==null){
+            return null;
+        }
+        V result = elements.get(key).get();
+        notifyListener(key, result, "get");
+        return result;
     }
 
     @Override
@@ -36,6 +41,17 @@ public class MyCache<K, V> implements HwCache<K, V> {
     @Override
     public void removeListener(HwListener listener) {
         listeners.remove(listener);
+    }
+
+
+    private void notifyListener(K key, V value, String action) {
+        listeners.forEach(listener -> {
+            try {
+                listener.notify(key, value, action);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        });
     }
 
 }
