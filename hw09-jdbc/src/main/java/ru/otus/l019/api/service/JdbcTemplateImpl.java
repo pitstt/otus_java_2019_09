@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import ru.otus.cachehw.HwListener;
 import ru.otus.cachehw.MyCache;
 import ru.otus.l019.api.dao.UserDao;
+import ru.otus.l019.api.model.TableObject;
 import ru.otus.l019.api.sessionmanager.SessionManager;
 
 import java.lang.ref.SoftReference;
@@ -14,12 +15,15 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
 
     private static Logger logger = LoggerFactory.getLogger(JdbcTemplateImpl.class);
 
-    private static MyCache<String, SoftReference<Object>> cache = new MyCache<>();
+    private static MyCache<String, Object> cache = new MyCache<>();
 
     private final UserDao userDao;
 
     public JdbcTemplateImpl(UserDao userDao) {
         this.userDao = userDao;
+        HwListener<Integer, Integer> listener =
+                (key, value, action) -> logger.info("key:{}, value:{}, action: {}", key, value, action);
+        cache.addListener(listener);
     }
 
     @Override
@@ -29,10 +33,7 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
             try {
                 long userId = userDao.create(user);
                 sessionManager.commitSession();
-                cache.put(String.valueOf(userId), new SoftReference<>(user));
-                HwListener<Integer, Integer> listener =
-                        (key, value, action) -> logger.info("key:{}, value:{}, action: {}", key, value, action);
-                cache.addListener(listener);
+                cache.put(String.valueOf(userId), user);
                 logger.info("created object: {}", userId);
                 return userId;
             } catch (Exception e) {
@@ -49,18 +50,14 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
             sessionManager.beginSession();
             try {
                 Object result = Optional.ofNullable(cache.get(String.valueOf(id)))
-                        .map(SoftReference::get)
                         .orElse(null);
-                if(result!=null){
+                if (result != null) {
                     logger.info("use Cache");
                     return (Optional<T>) Optional.of(result);
                 }
                 logger.info("use DB");
                 Optional<Object> userOptional = userDao.load(id, clazz);
-                cache.put(String.valueOf(id), new SoftReference<>(userOptional));
-                HwListener<Integer, Integer> listener =
-                        (key, value, action) -> logger.info("key:{}, value:{}, action: {}", key, value, action);
-                cache.addListener(listener);
+                cache.put(String.valueOf(id), userOptional);
                 logger.info("object: {}", userOptional.orElse(null));
                 return (Optional<T>) userOptional;
             } catch (Exception e) {

@@ -1,34 +1,27 @@
 package ru.otus.cachehw;
 
 
-import java.lang.ref.SoftReference;
 import java.util.*;
 
 public class MyCache<K, V> implements HwCache<K, V> {
 
-    private final WeakHashMap <K, SoftReference<V>> elements = new WeakHashMap <>();
+    private final WeakHashMap <K, V> elements = new WeakHashMap <>();
     private List<HwListener> listeners = new ArrayList<>();
 
     @Override
     public void put(K key, V value) {
         notifyListener(key, value, "put");
-        elements.put(key, new SoftReference<>(value));
+        elements.put(key, value);
     }
 
     @Override
     public void remove(K key) {
-        SoftReference<V> ref = elements.get(key);
-        if (ref != null) {
             elements.remove(key);
-        }
     }
 
     @Override
     public V get(K key) {
-        if(elements.get(key)==null){
-            return null;
-        }
-        V result = elements.get(key).get();
+        V result = elements.get(key);
         notifyListener(key, result, "get");
         return result;
     }
