@@ -2,6 +2,7 @@ package ru.otus.l019;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.cachehw.MyCache;
 import ru.otus.l019.api.dao.UserDao;
 import ru.otus.l019.api.model.Account;
 import ru.otus.l019.api.model.User;
@@ -31,12 +32,21 @@ public class DbServiceDemo {
         SessionManagerJdbc sessionManager = new SessionManagerJdbc(dataSource);
         DbExecutor<Object> dbExecutor = new DbExecutor<>();
         UserDao userDao = new UserDaoJdbc(sessionManager, dbExecutor);
-        JdbcTemplate jdbcTemplate = new JdbcTemplateImpl(userDao);
+        JdbcTemplate jdbcTemplate = new JdbcTemplateImpl(userDao, new MyCache<>());
+        Optional<User> user = null;
+        long id = 0;
+        for (int i = 0; i < 200; i++) {
+            id = jdbcTemplate.create(new User("dbServiceUser", 11));
+            Thread.sleep(300);
+            user = jdbcTemplate.load(id, User.class);
+        }
 
-
-        long id = jdbcTemplate.create(new User("dbServiceUser", 11));
-        Optional<User> user = jdbcTemplate.load(id, User.class);
-
+        System.out.println("--------------------------------------");
+        Thread.sleep(100);
+        for (int i = 1; i < 200; i++) {
+            user = jdbcTemplate.load(i, User.class);
+        }
+        System.out.println("--------------------------------------");
         System.out.println(user);
         user.ifPresentOrElse(
                 crUser -> logger.info("created user, name:{} , age:{}", ((User) crUser).getName(), ((User) crUser).getAge()),
