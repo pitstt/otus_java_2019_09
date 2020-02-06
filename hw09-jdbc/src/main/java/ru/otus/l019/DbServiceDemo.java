@@ -2,6 +2,7 @@ package ru.otus.l019;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.cachehw.MyCache;
 import ru.otus.l019.api.dao.UserDao;
 import ru.otus.l019.api.model.Account;
 import ru.otus.l019.api.model.User;
@@ -31,7 +32,7 @@ public class DbServiceDemo {
         SessionManagerJdbc sessionManager = new SessionManagerJdbc(dataSource);
         DbExecutor<Object> dbExecutor = new DbExecutor<>();
         UserDao userDao = new UserDaoJdbc(sessionManager, dbExecutor);
-        JdbcTemplate jdbcTemplate = new JdbcTemplateImpl(userDao);
+        JdbcTemplate jdbcTemplate = new JdbcTemplateImpl(userDao, new MyCache<>());
         Optional<User> user = null;
         long id = 0;
         for (int i = 0; i < 200; i++) {

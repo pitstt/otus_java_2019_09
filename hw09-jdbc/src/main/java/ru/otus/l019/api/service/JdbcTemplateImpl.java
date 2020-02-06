@@ -15,12 +15,13 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
 
     private static Logger logger = LoggerFactory.getLogger(JdbcTemplateImpl.class);
 
-    private static MyCache<String, Object> cache = new MyCache<>();
+    private static MyCache<String, Object> cache;
 
     private final UserDao userDao;
 
-    public JdbcTemplateImpl(UserDao userDao) {
+    public JdbcTemplateImpl(UserDao userDao,MyCache<String, Object> cache) {
         this.userDao = userDao;
+        this.cache=cache;
         HwListener<Integer, Integer> listener =
                 (key, value, action) -> logger.info("key:{}, value:{}, action: {}", key, value, action);
         cache.addListener(listener);
