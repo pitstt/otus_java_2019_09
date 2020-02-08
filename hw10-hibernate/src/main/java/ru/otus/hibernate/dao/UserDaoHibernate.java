@@ -22,7 +22,6 @@ public class UserDaoHibernate<T> implements UserDao<T> {
     this.sessionManager = sessionManager;
   }
 
-
   @Override
   public Optional<User> load(long id,Class c) {
     DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
