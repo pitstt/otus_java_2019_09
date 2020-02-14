@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Пользователи</title>
+    <script>
+        function getUsers() {
+            const userDataContainer = document.getElementById('userDataContainer');
+            fetch('api/user')
+                .then(response => response.json())
+                .then(user => userDataContainer.innerHTML = JSON.stringify(user));
+        }
+    </script>
+</head>
+
+<body>
+<h4>Добавить позьзователя</h4>
+<section>
+    <form id="create-form" th:action="@{/user/save}" th:object="${user}" th:method="post" accept-charset="utf-8">
+        <dl>
+            <dt>Введите имя пользователя</dt>
+            <dd><input type="text" name="name" value="" placeholder="Введите имя пользователя"/></dd>
+        </dl>
+        <dl>
+            <dt>Введите логин пользователя</dt>
+            <dd><input type="text" name="login" value="" placeholder="Введите логин пользователя"/></dd>
+        </dl>
+        <dl>
+            <dt>Введите пароль пользователя</dt>
+            <dd><input type="text" name="password" value="" placeholder="Введите пароль пользователя"/></dd>
+        </dl>
+        <button type="submit">Добавить</button>
+    </form>
+</section>
+
+<h4>Получить всех пользователей</h4>
+<button onclick="getUsers()">Получить</button>
+<pre id="userDataContainer"></pre>
+
+</body>
+</html>
