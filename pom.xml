@@ -35,7 +35,6 @@
         <module>hw10-hibernate</module>
         <module>hw11-cache</module>
         <module>hw12-web</module>
-        <module>hw13-war</module>
         <module>hw13-ioc</module>
     </modules>
 
