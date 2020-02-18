@@ -1,12 +1,12 @@
-package ru.otus.hw13.hibernate.dao;
+package ru.otus.hibernate.dao;
 
 
 import api.model.User;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw13.hibernate.sessionmanager.DatabaseSessionHibernate;
-import ru.otus.hw13.hibernate.sessionmanager.SessionManagerHibernate;
+import ru.otus.hibernate.sessionmanager.DatabaseSessionHibernate;
+import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
 import ru.otus.l019.api.dao.UserDao;
 import ru.otus.l019.api.dao.UserDaoException;
 import ru.otus.l019.api.sessionmanager.SessionManager;

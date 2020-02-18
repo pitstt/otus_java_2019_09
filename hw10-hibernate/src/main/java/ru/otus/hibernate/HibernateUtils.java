@@ -1,4 +1,4 @@
-package ru.otus.hw13.hibernate;
+package ru.otus.hibernate;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;

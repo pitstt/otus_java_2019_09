@@ -1,4 +1,4 @@
-package ru.otus.hw13.hibernate;
+package ru.otus.hibernate;
 
 import api.model.AddressDataSet;
 import api.model.PhoneDataSet;
@@ -6,8 +6,8 @@ import api.model.User;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw13.hibernate.dao.UserDaoHibernate;
-import ru.otus.hw13.hibernate.sessionmanager.SessionManagerHibernate;
+import ru.otus.hibernate.dao.UserDaoHibernate;
+import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
 import ru.otus.l019.api.dao.UserDao;
 import service.HibernateTemplate;
 import service.HibernateTemplateImpl;
