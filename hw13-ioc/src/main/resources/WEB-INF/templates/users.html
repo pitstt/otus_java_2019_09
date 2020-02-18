@@ -1,5 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Пользователи</title>
     <script>
@@ -9,13 +8,42 @@
                 .then(response => response.json())
                 .then(user => userDataContainer.innerHTML = JSON.stringify(user));
         }
+
+
+        function createNewUser(form) {
+            fetch('api/user/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body:  JSON.stringify(objectFromForm(form))
+            }).then(res => {
+                if (res.status >= 500) {
+                    alert('Ошибка при создании пользователя');
+                    console.log(res);
+                }
+            })
+                .catch(res => {
+                    alert('Ошибка');
+                    console.log(res)
+                });
+        }
+
+        function objectFromForm(form) {
+            let object = {};
+            let formData = new FormData(form);
+            formData.forEach((value, key) => {object[key] = value});
+
+            return object;
+        }
+
     </script>
 </head>
 
 <body>
 <h4>Добавить позьзователя</h4>
 <section>
-    <form id="create-form" th:action="@{/user/save}" th:object="${user}" th:method="post" accept-charset="utf-8">
+    <form onsubmit="createNewUser(this); return false;" action="#" autocomplete="off">
         <dl>
             <dt>Введите имя пользователя</dt>
             <dd><input type="text" name="name" value="" placeholder="Введите имя пользователя"/></dd>
