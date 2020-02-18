@@ -1,25 +1,30 @@
-package ru.otus.dao;
+package ru.otus.hw13.hibernate.dao;
+
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+import ru.otus.hw13.api.model.User;
+import ru.otus.hw13.api.repository.UserRepository;
+import ru.otus.hw13.api.repository.UserRepositoryException;
+import ru.otus.hw13.api.sessionmanager.SessionManager;
 import ru.otus.hw13.hibernate.sessionmanager.DatabaseSessionHibernate;
 import ru.otus.hw13.hibernate.sessionmanager.SessionManagerHibernate;
-import ru.otus.l019.api.dao.UserDaoException;
-import ru.otus.l019.api.sessionmanager.SessionManager;
-import ru.otus.model.User;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class UserDaoHibernate implements UserDao {
-    private static Logger logger = LoggerFactory.getLogger(UserDaoHibernate.class);
+@Repository
+public class UserRepositoryHibernate implements UserRepository {
+    private static Logger logger = LoggerFactory.getLogger(UserRepositoryHibernate.class);
 
     private final SessionManagerHibernate sessionManager;
 
-    public UserDaoHibernate(SessionManagerHibernate sessionManager) {
+    public UserRepositoryHibernate(SessionManagerHibernate sessionManager) {
         this.sessionManager = sessionManager;
     }
 
@@ -36,7 +41,7 @@ public class UserDaoHibernate implements UserDao {
             return user.getId();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new UserDaoException(e);
+            throw new UserRepositoryException(e);
         }
     }
 
@@ -67,7 +72,7 @@ public class UserDaoHibernate implements UserDao {
     }
 
     @Override
-    public List<User> findAllUser() {
+    public List<User> getAllUser() {
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
         try {
             return currentSession.getHibernateSession().createQuery("FROM User", User.class).list();
