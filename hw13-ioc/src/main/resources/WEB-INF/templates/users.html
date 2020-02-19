@@ -6,7 +6,7 @@
             const userDataContainer = document.getElementById('userDataContainer');
             fetch('api/user')
                 .then(response => response.json())
-                .then(user => userDataContainer.innerHTML = JSON.stringify(user));
+                .then(user => userDataContainer.innerHTML = JSON.stringify(user, undefined, 2));
         }
 
 
@@ -16,7 +16,7 @@
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
                 },
-                body:  JSON.stringify(objectFromForm(form))
+                body: JSON.stringify(objectFromForm(form))
             }).then(res => {
                 if (res.status >= 500) {
                     alert('Ошибка при создании пользователя');
@@ -32,7 +32,9 @@
         function objectFromForm(form) {
             let object = {};
             let formData = new FormData(form);
-            formData.forEach((value, key) => {object[key] = value});
+            formData.forEach((value, key) => {
+                object[key] = value
+            });
 
             return object;
         }
