@@ -6,7 +6,7 @@ public class MyThread extends Thread {
 
     public MyThread(String name, Monitor monitor) {
         super(name);
-        this.monitor= monitor;
+        this.monitor = monitor;
     }
 
     @Override
@@ -20,21 +20,21 @@ public class MyThread extends Thread {
     }
 
     private void print(String threadName, int i) {
-        synchronized(monitor) {
-            while ( (threadName.equals("t1") && monitor.flag) ||
-                    (threadName.equals("t2") && !monitor.flag) ) {
+        synchronized (monitor) {
+            while ((threadName.equals("t1") && monitor.flag) ||
+                    (threadName.equals("t2") && !monitor.flag)) {
                 try {
                     monitor.wait();
-                }
-                catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
             System.out.println(getName() + " " + i);
-            if(threadName.equals("t1"))
+            if (threadName.equals("t1")) {
                 monitor.flag = true;
-            else if(threadName.equals("t2"))
+            } else if (threadName.equals("t2")) {
                 monitor.flag = false;
+            }
             monitor.notify();
         }
 
