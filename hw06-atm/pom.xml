@@ -9,9 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>hw07-atm</artifactId>
+    <artifactId>hw06-atm</artifactId>
 
-    <name>hw07-atm</name>
+    <name>hw06-atm</name>
 
     <dependencies>
         <dependency>
