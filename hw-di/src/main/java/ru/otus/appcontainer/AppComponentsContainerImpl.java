@@ -43,7 +43,8 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
             bean = method.invoke(configClass.getDeclaredConstructor().newInstance(),
                     Arrays.stream(method.getParameterTypes()).map(this::getAppComponent).toArray());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+            System.exit(-1);
         }
         return bean;
     }
