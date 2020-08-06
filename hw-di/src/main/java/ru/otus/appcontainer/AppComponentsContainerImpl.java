@@ -13,11 +13,11 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     private final List<Object> appComponents = new ArrayList<>();
     private final Map<String, Object> appComponentsByName = new HashMap<>();
 
-    public AppComponentsContainerImpl(Class<?> initialConfigClass) {
+    public AppComponentsContainerImpl(Class<?> initialConfigClass) throws CreateBeanException {
         processConfig(initialConfigClass);
     }
 
-    private void processConfig(Class<?> configClass) {
+    private void processConfig(Class<?> configClass) throws CreateBeanException {
         checkConfigClass(configClass);
         List<Method> methods = Arrays.stream(configClass.getDeclaredMethods())
                 .filter(method -> method.isAnnotationPresent(AppComponent.class))
@@ -37,14 +37,13 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         }
     }
 
-    private Object createBean(Method method, Class<?> configClass) {
+    private Object createBean(Method method, Class<?> configClass) throws CreateBeanException {
         Object bean = null;
         try {
             bean = method.invoke(configClass.getDeclaredConstructor().newInstance(),
                     Arrays.stream(method.getParameterTypes()).map(this::getAppComponent).toArray());
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
+            throw new CreateBeanException(e.getMessage());
         }
         return bean;
     }

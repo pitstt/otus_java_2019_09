@@ -1,6 +1,7 @@
 package ru.otus;
 
 import ru.otus.appcontainer.AppComponentsContainerImpl;
+import ru.otus.appcontainer.CreateBeanException;
 import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.config.AppConfig;
 import ru.otus.services.GameProcessor;
@@ -15,7 +16,7 @@ PS Приложение представляет из себя тренажер 
 
 public class App {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws CreateBeanException {
         AppComponentsContainer container = new AppComponentsContainerImpl(AppConfig.class);
         GameProcessor gameProcessor = container.getAppComponent(GameProcessor.class);
         gameProcessor.startGame();
