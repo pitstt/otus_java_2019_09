@@ -52,7 +52,6 @@ public class ATMImplTest {
         //возвращаю к исходному состоянию
         state = departmentAtm.restoreState();
         Assert.assertEquals(2700, state.getCompositeAtm().getBalance());
-
     }
 
 }
