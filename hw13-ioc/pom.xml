@@ -23,7 +23,7 @@
         <spring.version>5.2.4.RELEASE</spring.version>
         <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
         <h2.version>1.4.197</h2.version>
-        <hibernate-core.version>5.4.4.Final</hibernate-core.version>
+        <hibernate-core.version>5.4.24.Final</hibernate-core.version>
     </properties>
 
 
